@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col col-lg-6 col-md-12 col-sm-12">
+        <form method="POST">{% csrf_token %}
+            <div class="form-group">
+                Task
+                {{ form.content }}
+            </div>
+            <div class="form-group">
+                {{ form.date.label }}
+                {{ form.date }}
+            </div>
+            <input class="btn btn-primary" type="submit" value="Create">
+        </form>
+    </div>
+
+    <script>
+        function request(address) {
+            $.ajax({
+                url: address,
+                type: "POST",
+                dataType: "json",
+                data: {
+                    'tresc': 'siema',
+                },
+                success: data => {
+                    console.log(data)
+                },
+                beforeSend: function (xhr) { xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}') }
+            })
+        }
+
+        function switch_state(id, element) {
+            request(id + "/switch/")
+            let value = document.getElementById(id + ":status").innerHTML
+            value == "True" ? value = "False" : value = "True"
+            document.getElementById(id + ":status").innerHTML = value
+
+        }
+
+        function delete_todo(id) {
+            request(id + "/delete/")
+            element = document.getElementById(id + ":li")
+            element.parentNode.removeChild(element)
+        }
+
+    </script>
+
+    <div class="col col-lg-6 col-md-12 col-sm-12">
+        <ul class="list-group">
+            {% for object in object_list %}
+            <li id="{{ object.id }}:li" class="list-group-item">
+                <div class="row bar">
+                    {{ object.date }}
+                </div>
+                <div class="row content">
+                    <div class="col-8">{{ object.content }}</div> 
+                    <div class="col-4" id="{{ object.id }}:status">{{ object.completed }}</div>
+                </div>
+                <div class="row center-block control">
+                    <input class="btn btn-primary" type="button" value="Switch"
+                        onclick="switch_state('{{ object.id }}', this)">
+                    <input class="btn btn-primary" type="button" value="Delete"
+                        onclick="delete_todo('{{ object.id }}')">
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
