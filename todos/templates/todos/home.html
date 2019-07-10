@@ -48,7 +48,7 @@
 
     </script>
 
-    <div class="col col-lg-6 col-md-12 col-sm-12">
+    <div class="col col-12 col-lg-6">
         <ul class="list-group">
             {% for object in object_list %}
             <li id="{{ object.id }}:li" class="list-group-item">
@@ -56,7 +56,7 @@
                     {{ object.date }}
                 </div>
                 <div class="row content">
-                    <div class="col-8">{{ object.content }}</div> 
+                    <div class="col-8">{{ object.content }}</div>
                     <div class="col-4" id="{{ object.id }}:status">{{ object.completed }}</div>
                 </div>
                 <div class="row center-block control">
@@ -70,4 +70,10 @@
         </ul>
     </div>
 </div>
+{% if user.is_authenticated %}
+<div class="row m-3"></div>
+<div class="row d-flex justify-content-center">
+    <a class="btn btn-primary" href="logout">Logout</a>
+</div>
+{% endif %}
 {% endblock %}
